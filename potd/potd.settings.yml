@@ -1,0 +1,4 @@
+potd.settings:
+  block_title: 'Product of the Day'
+  max_potd_products: 5
+  admin_email: 'jonurace@gmail.com'

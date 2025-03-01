@@ -1,0 +1,9 @@
+name: 'banner'
+type: module
+description: 'Provides an HTML banner that dynamically updates its background image based on the active menu item.'
+package: jonurace
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drupal:block
+  - drupal:file
+  - drupal:menu_link_content

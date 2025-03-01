@@ -1,0 +1,138 @@
+<?php
+
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\file\Entity\File;
+use Drupal\block\Entity\Block;
+use Drupal\Core\File\FileExists;
+
+/**
+ * Implements hook_install().
+ */
+function banner_install() {
+  // use the file system service
+  $file_system = \Drupal::service('file_system');
+
+  // directory to save the images
+  $directory = 'public://banner';
+
+  // if doesn't exist, create the directory
+  if (!$file_system->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
+    \Drupal::logger('banner')
+      ->error('No se pudo crear el directorio: @dir', ['@dir' => $directory]);
+    return;
+  }
+
+  // get the module path
+  $module_handler = \Drupal::service('extension.list.module');
+  $module_path = $module_handler->getPath('banner');
+
+  // list images
+  $images = [
+    'banner-a.jpg',
+    'banner-b.jpg',
+  ];
+
+  // copy images to the public directory
+  $image_uris = [];
+  foreach ($images as $image) {
+    $source = $module_path . '/assets/' . $image;
+    $destination = $directory . '/' . $image;
+
+    if (file_exists($source)) {
+      // read the file
+      $data = file_get_contents($source);
+      if ($data !== FALSE) {
+        // save the file
+        $file = File::create([
+          'uri' => $destination,
+          'status' => 1,
+        ]);
+        $file->save();
+
+        // move the file
+        $file_system->saveData($data, $destination, FileExists::Replace);
+
+        // save uri
+        $image_uris[$image] = $file->getFileUri();
+      }
+    }
+  }
+
+  // create links in the main menu, only for example
+  $menu_id = 'main';
+
+  // verify and create Root A
+  $root_a = MenuLinkContent::create([
+    'title' => 'Root A',
+    'link' => ['uri' => 'internal:/root-a'],
+    'menu_name' => $menu_id,
+    'expanded' => TRUE,
+  ]);
+  $root_a->save();
+
+  // verify and create Root B
+  $root_b = MenuLinkContent::create([
+    'title' => 'Root B',
+    'link' => ['uri' => 'internal:/root-b'],
+    'menu_name' => $menu_id,
+    'expanded' => TRUE,
+  ]);
+  $root_b->save();
+
+  // create sub links
+  $sub_1 = MenuLinkContent::create([
+    'title' => 'Sub 1',
+    'link' => ['uri' => 'internal:/root-a/sub-1'],
+    'menu_name' => $menu_id,
+    'parent' => $root_a->getPluginId(),
+  ]);
+  $sub_1->save();
+
+  $sub_2 = MenuLinkContent::create([
+    'title' => 'Sub 2',
+    'link' => ['uri' => 'internal:/root-b/sub-2'],
+    'menu_name' => $menu_id,
+    'parent' => $root_b->getPluginId(),
+  ]);
+  $sub_2->save();
+
+  $sub_3 = MenuLinkContent::create([
+    'title' => 'Sub 3',
+    'link' => ['uri' => 'internal:/root-b/sub-3'],
+    'menu_name' => $menu_id,
+    'parent' => $root_b->getPluginId(),
+  ]);
+  $sub_3->save();
+
+  // search for the block
+  $block_id = 'banner_block';
+  $existing_block = Block::load($block_id);
+  $theme = \Drupal::config('system.theme')
+    ->get('default'); // Obtiene el tema activo
+
+  if (!$existing_block) {
+    $block = Block::create([
+      'id' => $block_id,
+      'plugin' => 'banner_block',
+      'theme' => $theme, // Usa el tema activo
+      'region' => 'content',
+      'weight' => 0,
+      'visibility' => [
+        'request_path' => [
+          'id' => 'request_path',
+          'pages' => '',
+          'negate' => 0,
+          'context_mapping' => [],
+        ],
+      ],
+    ]);
+    $block->save();
+  }
+
+  // save configuration
+  \Drupal::configFactory()->getEditable('banner.settings')
+    ->set('banner_a', $image_uris['banner-a.jpg'] ?? '')
+    ->set('banner_b', $image_uris['banner-b.jpg'] ?? '')
+    ->save();
+}

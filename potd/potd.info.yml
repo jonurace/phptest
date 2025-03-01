@@ -1,0 +1,5 @@
+name: 'potd'
+type: module
+description: 'Block for the product of the day'
+package: jonurace
+core_version_requirement: ^10 || ^11

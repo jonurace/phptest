@@ -1,0 +1,6 @@
+potd.settings:
+  title: 'Product of the Day Settings'
+  route_name: potd.settings
+  parent: system.admin_config
+  description: 'Configure settings for Product of the Day.'
+  weight: 10

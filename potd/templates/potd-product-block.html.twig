@@ -1,0 +1,19 @@
+<div class="potd-product-block">
+    <h2>{{ title }}</h2> {# Ensure the correct title appears #}
+    {% if products|length > 0 %}
+        {% for product in products %}
+            <div class="potd-product-item">
+                <h3>{{ product.name }}</h3>
+                <div class="potd-product-image">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                </div>
+                <p>{{ product.summary }}</p>
+                <div class="potd-cta">
+                    {{ product.cta_link|raw }}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No products available.</p>
+    {% endif %}
+</div>

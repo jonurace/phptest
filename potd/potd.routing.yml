@@ -1,0 +1,38 @@
+potd.product_list:
+  path: '/admin/config/potd/products'
+  defaults:
+    _controller: 'Drupal\potd\Controller\ProductController::productList'
+    _title: 'Product List'
+  requirements:
+    _permission: 'administer potd'
+
+potd.product_form:
+  path: '/admin/config/potd/product/{product_id}'
+  defaults:
+    _form: 'Drupal\potd\Form\ProductForm'
+    _title: 'Add/Edit Product'
+    product_id: NULL
+  requirements:
+    _permission: 'administer potd'
+    product_id: '\d+'
+  options:
+    parameters:
+      product_id:
+        type: 'integer'
+        required: false
+
+potd.product_delete:
+  path: '/admin/config/potd/product/{product_id}/delete'
+  defaults:
+    _controller: 'Drupal\potd\Controller\ProductController::deleteProduct'
+  requirements:
+    _permission: 'administer potd'
+    product_id: '\d+'
+
+potd.settings:
+  path: '/admin/config/potd/settings'
+  defaults:
+    _form: 'Drupal\potd\Form\SettingsForm'
+    _title: 'Product of the Day Settings'
+  requirements:
+    _permission: 'administer potd'

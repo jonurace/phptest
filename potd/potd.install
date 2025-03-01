@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the potd module.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Database\Database;
+use Drupal\Core\Schema\Schema;
+
+/**
+ * Implements hook_install().
+ */
+function potd_install() {
+  $schema = _potd_get_schema();
+  $database = Database::getConnection();
+  $database->schema()->createTable('potd_products', $schema['potd_products']);
+  $database->schema()->createTable('potd_clicks', $schema['potd_clicks']);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function potd_uninstall() {
+  $database = Database::getConnection();
+  $database->schema()->dropTable('potd_products');
+  $database->schema()->dropTable('potd_clicks');
+}
+
+/**
+ * Defines the schema for the potd module.
+ */
+function _potd_get_schema() {
+  return [
+    'potd_products' => [
+      'description' => 'Stores product details for Product of the Day.',
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'name' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+        'summary' => [
+          'type' => 'text',
+          'not null' => FALSE,
+        ],
+        'image' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => FALSE,
+        ],
+        'product_of_the_day' => [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => TRUE,
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+    ],
+    'potd_clicks' => [
+      'description' => 'Stores click tracking for Product of the Day.',
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'product_id' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'clicked_at' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+      'indexes' => [
+        'product_id' => ['product_id'],
+      ],
+    ],
+  ];
+}

@@ -1,0 +1,13 @@
+potd.settings:
+  type: config_object
+  label: 'Product of the Day Settings'
+  mapping:
+    block_title:
+      type: string
+      label: 'Block Title'
+    max_potd_products:
+      type: integer
+      label: 'Max Products of the Day'
+    admin_email:
+      type: string
+      label: 'Admin Email'

@@ -1,0 +1,49 @@
+# root A path: /root-a
+banner.root_a:
+  path: '/root-a'
+  defaults:
+    _controller: '\Drupal\banner\Controller\BannerController::content'
+    _title: 'Root A'
+  requirements:
+    _permission: 'access content'
+
+banner.sub_1:
+  path: '/root-a/sub-1'
+  defaults:
+    _controller: '\Drupal\banner\Controller\BannerController::content'
+    _title: 'Sub 1'
+  requirements:
+    _permission: 'access content'
+
+banner.sub_4:
+  path: '/root-a/sub-4'
+  defaults:
+    _controller: '\Drupal\banner\Controller\BannerController::content'
+    _title: 'Sub 4'
+  requirements:
+    _permission: 'access content'
+
+# root B path: /root-b
+banner.root_b:
+  path: '/root-b'
+  defaults:
+    _controller: '\Drupal\banner\Controller\BannerController::content'
+    _title: 'Root B'
+  requirements:
+    _permission: 'access content'
+
+banner.sub_2:
+  path: '/root-b/sub-2'
+  defaults:
+    _controller: '\Drupal\banner\Controller\BannerController::content'
+    _title: 'Sub 2'
+  requirements:
+    _permission: 'access content'
+
+banner.sub_3:
+  path: '/root-b/sub-3'
+  defaults:
+    _controller: '\Drupal\banner\Controller\BannerController::content'
+    _title: 'Sub 3'
+  requirements:
+    _permission: 'access content'

@@ -1,0 +1,4 @@
+services:
+  banner.banner_manager:
+    class: 'Drupal\banner\Services\BannerManager'
+    arguments: ['@config.factory', '@entity_type.manager', '@menu.link_tree', '@current_route_match', '@path_alias.manager', '@path.current']
